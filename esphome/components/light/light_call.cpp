@@ -8,26 +8,23 @@ namespace light {
 static const char *const TAG = "light";
 
 static const char *color_mode_to_human(ColorMode color_mode) {
-  switch (color_mode) {
-    case ColorMode::UNKNOWN:
-      return "Unknown";
-    case ColorMode::WHITE:
-      return "White";
-    case ColorMode::COLOR_TEMPERATURE:
-      return "Color temperature";
-    case ColorMode::COLD_WARM_WHITE:
-      return "Cold/warm white";
-    case ColorMode::RGB:
-      return "RGB";
-    case ColorMode::RGB_WHITE:
-      return "RGBW";
-    case ColorMode::RGB_COLD_WARM_WHITE:
-      return "RGB + cold/warm white";
-    case ColorMode::RGB_COLOR_TEMPERATURE:
-      return "RGB + color temperature";
-    default:
-      return "";
-  }
+  if (color_mode == ColorMode::UNKNOWN)
+    return "Unknown";
+  if (color_mode == ColorMode::WHITE)
+    return "White";
+  if (color_mode == ColorMode::COLOR_TEMPERATURE)
+    return "Color temperature";
+  if (color_mode == ColorMode::COLD_WARM_WHITE)
+    return "Cold/warm white";
+  if (color_mode == ColorMode::RGB)
+    return "RGB";
+  if (color_mode == ColorMode::RGB_WHITE)
+    return "RGBW";
+  if (color_mode == ColorMode::RGB_COLD_WARM_WHITE)
+    return "RGB + cold/warm white";
+  if (color_mode == ColorMode::RGB_COLOR_TEMPERATURE)
+    return "RGB + color temperature";
+  return "";
 }
 
 void LightCall::perform() {
@@ -226,6 +223,9 @@ LightColorValues LightCall::validate_() {
   VALIDATE_RANGE(warm_white, "Warm white")
   VALIDATE_RANGE_(color_temperature, "Color temperature", traits.get_min_mireds(), traits.get_max_mireds())
 
+  // Flag whether an explicit turn off was requested, in which case we'll also stop the effect.
+  bool explicit_turn_off_request = this->state_.has_value() && !*this->state_;
+
   // Turn off when brightness is set to zero, and reset brightness (so that it has nonzero brightness when turned on).
   if (this->brightness_.has_value() && *this->brightness_ == 0.0f) {
     this->state_ = optional<float>(false);
@@ -238,6 +238,7 @@ LightColorValues LightCall::validate_() {
       this->color_brightness_ = optional<float>(1.0f);
   }
 
+  // Create color values for the light with this call applied.
   auto v = this->parent_->remote_values;
   if (this->color_mode_.has_value())
     v.set_color_mode(*this->color_mode_);
@@ -318,7 +319,7 @@ LightColorValues LightCall::validate_() {
     if (this->has_effect_()) {
       ESP_LOGW(TAG, "'%s' - Cannot start an effect when turning off!", name);
       this->effect_.reset();
-    } else if (this->parent_->active_effect_index_ != 0) {
+    } else if (this->parent_->active_effect_index_ != 0 && explicit_turn_off_request) {
       // Auto turn off effect
       this->effect_ = 0;
     }
