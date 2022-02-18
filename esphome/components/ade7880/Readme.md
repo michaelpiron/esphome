@@ -1,8 +1,18 @@
 This component is work in progress.
 
 open issues at this moment:
-* Which are the connections between ESP and ADE chip? I have to know which GPIO pins of the ESP are connected to the IRQ’s of the ADE. I can’t see this visually on the PCBs without desoldering the top and bottom PCB, and even then I’m not sure if it can be deduced from the PCB tracks.
-* There are quite some calibration constants to figure out. Anyone who is familiar with this or who could reverse engineer it from the Shelly 3PM firmware binary?
+
+1/ Which are the connections between ESP and ADE chip? I have to know which GPIO pins of the ESP are connected to the IRQ’s of the ADE. I can’t see this visually on the PCBs without desoldering the top and bottom PCB, and even then I’m not sure if it can be deduced from the PCB tracks.
+
+**Update 2022-02-18:** Pin connections between ESP and ADE:
+* ADE Pin 29 (/IRQ0) -> ESP8266 Pin 12
+* ADE Pin 32 (/IRQ1) -> ESP8266 Pin 24
+* ADE Pin 36 (SCLK/SCL) > ESP Pin 9, via R36 to VDD
+* ADE Pin 37 (MISO/HSD) > NC
+* ADE Pin 38 (MOSI/SDA) > ESP Pin 10, via R35 to VDD
+* ADE Pin 39 (/SS/HSA) > via R46 to VDD
+
+2/ There are quite some calibration constants to figure out. Anyone who is familiar with this or who could reverse engineer it from the Shelly 3PM firmware binary?
 
 # ADE77880 Three-phase Power Sensor for ESPHome
 The ade7880 sensor platform allows you to use ADE7880 three phase energy metering ICs [(datasheet)](https://www.analog.com/media/en/technical-documentation/data-sheets/ADE7880.pdf) with ESPHome. These are commonly found in Shelly 3EM devices.
