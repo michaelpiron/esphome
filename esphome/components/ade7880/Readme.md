@@ -1,61 +1,28 @@
-# Status logging
+# Status of this ESPHome component ADE7880
 
 This component is work in progress.
+Discussions are also ongoing here:
+* https://github.com/esphome/feature-requests/issues/1579
+* https://github.com/arendst/Tasmota/discussions/13515
+* https://github.com/yaourdt/mgos-to-tasmota/issues/48
 
-**Update 2022-02-18:** The open issues are now closed. Now it's a matter of finalizing the code.
+## Ongoing work
 
 1/ Which are the connections between ESP and ADE chip? I have to know which GPIO pins of the ESP are connected to the IRQ’s of the ADE. I can’t see this visually on the PCBs without desoldering the top and bottom PCB, and even then I’m not sure if it can be deduced from the PCB tracks.
 
-**Solution:** Pin connections between ESP and ADE:
-* ADE Pin 29 (/IRQ0) -> ESP8266 Pin 12
-* ADE Pin 32 (/IRQ1) -> ESP8266 Pin 24
-* ADE Pin 36 (SCLK/SCL) > ESP Pin 9, via R36 to VDD
-* ADE Pin 37 (MISO/HSD) > NC
-* ADE Pin 38 (MOSI/SDA) > ESP Pin 10, via R35 to VDD
-* ADE Pin 39 (/SS/HSA) > via R46 to VDD
+> **Solution:** Pin connections between ESP and ADE:
+> * ADE Pin 29 (/IRQ0) -> ESP8266 Pin 12
+> * ADE Pin 32 (/IRQ1) -> ESP8266 Pin 24
+> * ADE Pin 36 (SCLK/SCL) > ESP Pin 9, via R36 to VDD
+> * ADE Pin 37 (MISO/HSD) > NC
+> * ADE Pin 38 (MOSI/SDA) > ESP Pin 10, via R35 to VDD
+> * ADE Pin 39 (/SS/HSA) > via R46 to VDD
+
+> This is not yet implemented in the code in this repository.
 
 2/ There are quite some calibration constants to figure out. Anyone who is familiar with this or who could reverse engineer it from the Shelly 3PM firmware binary?
 
-**Solution:** Found the calibration constants for the 3EM here: https://community.openenergymonitor.org/t/shelly-em-energy-monitor/14242/16
-`"rms": {
-"current_a": 3229050,
-  "current_b": 3293054,
-  "current_c": 3293157,
-  "current_n": -1449377154,
-  "current_s": 839891,
-  "voltage_a": -683106,
-  "voltage_b": -710907,
-  "voltage_c": -691744
-},
-"angles  ü": {
-  "angle0": 192,
-  "angle1": 216,
-  "angle2": 204
-},
-"powers": {
-   "totactive": {
-     "a": -1345202,
-     "b": -1346942,
-     "c": -1351825
-  },
- "apparent": {
-    "a": 85048,
-    "b": 85049,
-  "c": 85047
-  }
-},
- "energies": {
-  "totactive": {
-    "a": 3459,
-    "b": 3458,
-    "c": 3460
-  },
-"apparent": {
-  "a": 16159,
-  "b": 16147,
-    "c": 16147
-  }
-}`
+> **Solution:** It seems that you need to download the calibration constants from your 3EM device **before** loading any new firmware on it! Calibration constants are specific to a device, if you don't download them first, the device basically becomes worthless. Need to figure out how to download it.
 
 # Below text to be reused in ESPhome documentation
 
