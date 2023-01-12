@@ -22,7 +22,7 @@ Discussions are also ongoing here:
 
 2/ There are quite some calibration constants to figure out. Anyone who is familiar with this or who could reverse engineer it from the Shelly 3PM firmware binary?
 
-> **Solution:** It seems that you need to download the calibration constants from your 3EM device **before** loading any new firmware on it! Calibration constants are specific to a device, if you don't download them first, the device basically becomes worthless. Need to figure out how to download it.
+> **Solution:** It seems that you need to download the calibration constants from your 3EM device **before** loading any new firmware on it! Calibration constants are specific to a device, if you don't download them first, the device basically becomes worthless. ~~Need to figure out how to download it.~~ Download file calib.dat from http://<your_shelly3em>/calib.dat (see https://templates.blakadder.com/shelly_3EM.html)
 
 # Below text to be reused in ESPhome documentation
 
